@@ -14,7 +14,16 @@ const handleListen = () => console.log(`Listening on http://localhost:3000`);
 const httpServer = http.createServer(app); //http server create
 const wsServer = SocketIO(httpServer);
 
-
+wsServer.on("connection", socket => {
+    socket.onAny((event) => {
+        console.log(`Socket Event: ${event}`);
+    });
+    socket.on("enter_room", (roomName, done) => {
+        socket.join(roomName);
+        done();
+        socket.to(roomName).emit("welcome");
+    });
+});
 
 /*
 const sockets = [];
